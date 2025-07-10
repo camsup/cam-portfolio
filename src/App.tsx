@@ -56,7 +56,7 @@ function App() {
             <div className="link-arrow">→</div>
           </a>
           <a 
-            href="https://github.com" 
+            href="https://github.com/camsup" 
             className="link-card" 
             data-platform="github"
             onMouseMove={handleCardMouseMove}
@@ -66,7 +66,7 @@ function App() {
             <div className="link-arrow">→</div>
           </a>
           <a 
-            href="mailto:cam@email.com" 
+            href="mailto:cameronrdickenson@gmail.com" 
             className="link-card" 
             data-platform="email"
             onMouseMove={handleCardMouseMove}
