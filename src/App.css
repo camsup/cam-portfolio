@@ -75,8 +75,6 @@ body {
   overflow: hidden;
   position: relative;
   padding: 1rem;
-  backdrop-filter: blur(100px);
-  -webkit-backdrop-filter: blur(100px);
 }
 
 /* Mobile-first vertical layout */
@@ -305,13 +303,12 @@ body {
   height: 100%;
   background: linear-gradient(
     135deg,
-    rgba(0, 0, 0, 0.2) 0%,
-    rgba(0, 0, 0, 0.15) 50%,
-    rgba(0, 0, 0, 0.2) 100%
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0.3) 100%
   );
   z-index: 1;
-  backdrop-filter: blur(0.5px);
-  -webkit-backdrop-filter: blur(0.5px);
+  pointer-events: none;
 }
 
 
@@ -577,29 +574,23 @@ body {
 /* Music Widget */
 .music-widget {
   margin-top: 1.5rem;
-  background: rgba(255, 255, 255, 0.015);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 20px;
-  padding: 1.2rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1rem;
   max-width: 320px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .music-widget:hover {
-  background: rgba(255, 255, 255, 0.025);
-  border-color: rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
-  box-shadow: 
-    0 12px 40px rgba(0, 0, 0, 0.15),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .track-info {
