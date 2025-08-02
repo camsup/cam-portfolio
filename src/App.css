@@ -503,7 +503,6 @@ body {
 }
 
 .title-letter:hover {
-  animation: none;
   transform: scale(1.05) translateY(-3px);
 }
 
