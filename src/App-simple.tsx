@@ -16,6 +16,19 @@ interface MusicTrack {
   timestamp?: string;
 }
 
+// Function to open song in different music services
+const openInMusicService = (track: MusicTrack, service: 'spotify' | 'apple' | 'youtube') => {
+  const searchQuery = encodeURIComponent(`${track.title} ${track.artist}`);
+  
+  const urls = {
+    spotify: `https://open.spotify.com/search/${searchQuery}`,
+    apple: `https://music.apple.com/search?term=${searchQuery}`,
+    youtube: `https://music.youtube.com/search?q=${searchQuery}`
+  };
+  
+  window.open(urls[service], '_blank');
+};
+
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
@@ -294,6 +307,37 @@ function App() {
                     )}
                   </div>
                 </div>
+                
+                {/* Music Service Buttons */}
+                <div className="music-service-buttons">
+                  <motion.button
+                    className="music-service-btn spotify"
+                    onClick={() => openInMusicService(currentTrack, 'spotify')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    title="Open in Spotify"
+                  >
+                    <span>🎵</span>
+                  </motion.button>
+                  <motion.button
+                    className="music-service-btn apple"
+                    onClick={() => openInMusicService(currentTrack, 'apple')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    title="Open in Apple Music"
+                  >
+                    <span>🍎</span>
+                  </motion.button>
+                  <motion.button
+                    className="music-service-btn youtube"
+                    onClick={() => openInMusicService(currentTrack, 'youtube')}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    title="Open in YouTube Music"
+                  >
+                    <span>▶️</span>
+                  </motion.button>
+                </div>
               </motion.div>
             ) : (
               <motion.div
@@ -363,6 +407,9 @@ function App() {
                         scale: 1.05,
                         y: -2
                       }}
+                      onClick={() => openInMusicService(track, 'spotify')}
+                      style={{ cursor: 'pointer' }}
+                      title={`Listen to ${track.title} by ${track.artist} on Spotify`}
                     >
                       <div className="recent-track-flow-artwork">
                         {track.artwork ? (
