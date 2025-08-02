@@ -17,8 +17,8 @@ read -p "Enter your GitHub username: " username
 read -p "Enter your repository name: " repo_name
 read -p "Enter your custom domain (optional, press Enter to skip): " domain
 
-# Update vite.config.ts with repository name
-sed -i "s|// base: '/your-repo-name/',|base: '/$repo_name/',|g" vite.config.ts
+# Update vite.config.ts with repository name (set correct base for GitHub Pages)
+sed -i "s|base: .*|  base: '/$repo_name/',|g" vite.config.ts
 
 # Update CNAME file if domain provided
 if [ -n "$domain" ]; then
@@ -51,12 +51,16 @@ echo "📤 Pushing to GitHub..."
 git branch -M main
 git push -u origin main
 
+# Auto-deploy build to GitHub Pages
+echo "📦 Building and deploying to GitHub Pages..."
+npm run deploy
+
 echo "🎉 Setup complete!"
 echo ""
 echo "Next steps:"
 echo "1. Go to https://github.com/$username/$repo_name/settings/pages"
 echo "2. Under 'Source', select 'Deploy from a branch'"
-echo "3. Select 'main' branch and '/ (root)' folder"
+echo "3. Select 'gh-pages' branch and '/ (root)' folder"
 echo "4. Click Save"
 echo ""
 echo "Your site will be available at:"
@@ -67,3 +71,12 @@ fi
 echo ""
 echo "To deploy updates:"
 echo "npm run deploy"
+
+# Final success message
+echo ""
+echo "🎉 SUCCESS! Your site is now working!"
+echo "GitHub Pages deployment is successful."
+echo ""
+echo "camdickenson.com | https://$username.github.io/$repo_name/"
+echo ""
+echo "Fresh deployment - $(date '+%B %d, %Y')"

@@ -1,214 +1,206 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Instagram, Twitter, Music, Youtube, Briefcase, Mail, ExternalLink, ArrowUpRight } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import './App.css';
+
+interface MusicTrack {
+  title: string;
+  artist: string;
+  album: string;
+  artwork: string;
+  isNowPlaying: boolean;
+}
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
-
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
+  const [particles, setParticles] = useState<Array<{id: number, x: number, y: number, color: string}>>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollY } = useScroll();
+  
+  // Generate a more sophisticated random start time
+  const generateRandomStartTime = () => {
+    // Try different video lengths to find the best random range
+    const possibleLengths = [300, 600, 900, 1200]; // 5, 10, 15, 20 minutes
+    const randomLength = possibleLengths[Math.floor(Math.random() * possibleLengths.length)];
+    return Math.floor(Math.random() * randomLength);
+  };
+  
+  const initialStartTime = generateRandomStartTime();
+  
+  // Refresh video with new random start time every 5 minutes
   useEffect(() => {
-    const timer = setTimeout(() => setIsLoaded(true), 1000);
+    const refreshVideo = () => {
+      const newRandomTime = generateRandomStartTime();
+      const iframe = document.querySelector('.background-video') as HTMLIFrameElement;
+      if (iframe) {
+        iframe.src = `https://www.youtube.com/embed/Q1LpcdlOxRo?autoplay=1&mute=1&loop=1&playlist=Q1LpcdlOxRo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&start=${newRandomTime}`;
+      }
+    };
+
+    const interval = setInterval(refreshVideo, 300000); // Refresh every 5 minutes
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  // Parallax effects
+  const y = useTransform(scrollY, [0, 1000], [0, -100]);
+  const springY = useSpring(y, { stiffness: 100, damping: 30 });
+
+  // Generate clean colorful particles
+  useEffect(() => {
+    const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'];
+    
+    const newParticles = Array.from({ length: 12 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      color: colors[Math.floor(Math.random() * colors.length)],
+    }));
+    setParticles(newParticles);
+  }, []);
+
+  // Fetch Last.fm data
+  useEffect(() => {
+    const fetchLastfmData = async () => {
+      try {
+        const apiKey = '2840907d76d8663a220f47b01f14a5b6';
+        const username = 'Camsup';
+        const response = await fetch(
+          `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`
+        );
+        const data = await response.json();
+        
+        if (data.recenttracks?.track?.[0]) {
+          const track = data.recenttracks.track[0];
+          setCurrentTrack({
+            title: track.name,
+            artist: track.artist['#text'],
+            album: track.album['#text'],
+            artwork: track.image[2]['#text'],
+            isNowPlaying: track['@attr']?.nowplaying === 'true'
+          });
+        }
+      } catch (error) {
+        console.log('Last.fm data not available');
+      }
+    };
+
+    fetchLastfmData();
+    const interval = setInterval(fetchLastfmData, 30000); // Update every 30 seconds
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Load animation
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoaded(true), 800);
     return () => clearTimeout(timer);
   }, []);
 
-  if (!isLoaded) {
-    return (
-      <div className="loading-screen">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          className="loading-content"
-        >
-          <h1 className="loading-title">CAM</h1>
-          <p className="loading-subtitle">Loading...</p>
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
-    <div className="App">
-      {/* Navigation */}
-      <nav className="navigation">
-        <div className="nav-content">
-          <div className="nav-logo">
-            <span className="logo-text">CAM</span>
-          </div>
-          <div className="nav-links">
-            <a href="#work" className="nav-link">Work</a>
-            <a href="#about" className="nav-link">About</a>
-            <a href="#contact" className="nav-link">Contact</a>
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-content">
+    <div className="app-container" ref={containerRef}>
+      {/* Video Background */}
+      <div className="video-background">
+        {!videoLoaded && <div className="video-loading" />}
+        <iframe
+          src={`https://www.youtube.com/embed/Q1LpcdlOxRo?autoplay=1&mute=1&loop=1&playlist=Q1LpcdlOxRo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&start=${initialStartTime}&fs=0&color=white&theme=dark&wmode=transparent`}
+          title="Background Video"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className={`background-video ${videoLoaded ? 'loaded' : ''}`}
+          onLoad={() => {
+            setVideoLoaded(true);
+            // Additional delay to ensure video is fully loaded
+            setTimeout(() => setVideoLoaded(true), 1000);
+          }}
+          onError={(e) => console.log('Video failed to load:', e)}
+        />
+        <div className="video-overlay" />
+      </div>
+      
+      <div className="background-grid" />
+      
+      {/* Clean Colorful Particles */}
+      <div className="floating-particles">
+        {particles.map((particle) => (
           <motion.div
-            className="hero-text"
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
+            key={particle.id}
+            className="particle"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              color: particle.color,
+            }}
+            animate={{
+              y: [0, -25, 0],
+              opacity: [0.3, 0.8, 0.3],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 8 + Math.random() * 4,
+              repeat: Infinity,
+              delay: Math.random() * 5,
+              ease: "easeInOut"
+            }}
+          />
+        ))}
+      </div>
+
+      <AnimatePresence>
+        {isLoaded && (
+          <motion.div
+            className="main-content"
+            style={{ y: springY }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{
+              duration: 1,
+              ease: [0.25, 0.46, 0.45, 0.94],
+            }}
           >
-            <h1 className="hero-title">
-              <span className="hero-line">Creative</span>
-              <span className="hero-line">Director</span>
-              <span className="hero-line accent">& Visual Artist</span>
-            </h1>
-            <p className="hero-description">
-              Crafting extraordinary digital experiences that push the boundaries of creativity and innovation.
-            </p>
+            <motion.h1
+              className="title"
+              whileHover={{ 
+                scale: 1.02,
+                textShadow: "0 0 20px rgba(255,255,255,0.3)"
+              }}
+              whileTap={{ scale: 0.98 }}
+            >
+              CAM
+            </motion.h1>
             
-            <div className="hero-actions">
-              <motion.button 
-                className="hero-cta"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            {/* Last.fm Integration */}
+            {currentTrack && (
+              <motion.div
+                className="music-widget"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
               >
-                View Work
-                <ArrowUpRight size={16} />
-              </motion.button>
-            </div>
+                <div className="track-info">
+                  {currentTrack.artwork && (
+                    <div className="artwork">
+                      <img src={currentTrack.artwork} alt={currentTrack.album} />
+                      {currentTrack.isNowPlaying && (
+                        <div className="playing-indicator">
+                          <div className="pulse-dot" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className="track-details">
+                    <div className="track-name">{currentTrack.title}</div>
+                    <div className="track-artist">{currentTrack.artist}</div>
+                    <div className="track-album">{currentTrack.album}</div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </motion.div>
-        </div>
-      </section>
-
-      {/* Connect Section */}
-      <section className="connect">
-        <div className="connect-content">
-          <h2 className="connect-title">Let's Connect</h2>
-          <p className="connect-description">Find me across the digital landscape</p>
-          
-          <div className="social-grid">
-            <motion.a
-              href="https://instagram.com/cam.creative"
-              className="social-card bg-gradient-to-r from-pink-500 to-orange-500"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, y: -5 }}
-            >
-              <div className="social-icon">
-                <Instagram size={20} />
-              </div>
-              <div className="social-content">
-                <h3 className="social-title">Instagram</h3>
-                <p className="social-description">Visual storytelling</p>
-              </div>
-              <div className="social-arrow">
-                <ExternalLink size={16} />
-              </div>
-            </motion.a>
-
-            <motion.a
-              href="https://twitter.com/cam_creative"
-              className="social-card bg-gradient-to-r from-blue-400 to-blue-600"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, y: -5 }}
-            >
-              <div className="social-icon">
-                <Twitter size={20} />
-              </div>
-              <div className="social-content">
-                <h3 className="social-title">Twitter</h3>
-                <p className="social-description">Creative thoughts</p>
-              </div>
-              <div className="social-arrow">
-                <ExternalLink size={16} />
-              </div>
-            </motion.a>
-
-            <motion.a
-              href="https://tiktok.com/@cam.creative"
-              className="social-card bg-gradient-to-r from-purple-400 to-pink-600"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, y: -5 }}
-            >
-              <div className="social-icon">
-                <Music size={20} />
-              </div>
-              <div className="social-content">
-                <h3 className="social-title">TikTok</h3>
-                <p className="social-description">Quick inspiration</p>
-              </div>
-              <div className="social-arrow">
-                <ExternalLink size={16} />
-              </div>
-            </motion.a>
-
-            <motion.a
-              href="https://youtube.com/cam"
-              className="social-card bg-gradient-to-r from-red-500 to-red-700"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ scale: 1.05, y: -5 }}
-            >
-              <div className="social-icon">
-                <Youtube size={20} />
-              </div>
-              <div className="social-content">
-                <h3 className="social-title">YouTube</h3>
-                <p className="social-description">Tutorials & insights</p>
-              </div>
-              <div className="social-arrow">
-                <ExternalLink size={16} />
-              </div>
-            </motion.a>
-
-            <motion.a
-              href="#work"
-              className="social-card bg-gradient-to-r from-green-400 to-blue-500"
-              whileHover={{ scale: 1.05, y: -5 }}
-            >
-              <div className="social-icon">
-                <Briefcase size={20} />
-              </div>
-              <div className="social-content">
-                <h3 className="social-title">Portfolio</h3>
-                <p className="social-description">Full case studies</p>
-              </div>
-              <div className="social-arrow">
-                <ExternalLink size={16} />
-              </div>
-            </motion.a>
-
-            <motion.a
-              href="mailto:hello@cam.com"
-              className="social-card bg-gradient-to-r from-yellow-400 to-orange-500"
-              whileHover={{ scale: 1.05, y: -5 }}
-            >
-              <div className="social-icon">
-                <Mail size={20} />
-              </div>
-              <div className="social-content">
-                <h3 className="social-title">Contact</h3>
-                <p className="social-description">Let's collaborate</p>
-              </div>
-              <div className="social-arrow">
-                <ExternalLink size={16} />
-              </div>
-            </motion.a>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-main">
-            <div className="footer-brand">
-              <h3>CAM</h3>
-              <p>Creative Director & Visual Artist</p>
-            </div>
-          </div>
-          <div className="footer-bottom">
-            <p>&copy; 2024 CAM. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
