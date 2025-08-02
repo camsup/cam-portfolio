@@ -255,25 +255,12 @@ body {
 
 /* Enhanced video effects for better vibrancy */
 .background-video {
-  filter: brightness(1.2) contrast(1.15) saturate(1.1);
-}
-
-/* Additional YouTube interface hiding */
-.background-video::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  z-index: 10;
-  pointer-events: none;
+  filter: brightness(1.15) contrast(1.1) saturate(1.05);
 }
 
 /* Enhanced iframe effects for better scaling and vibrancy */
 .background-video iframe {
-  filter: brightness(1.15) contrast(1.1) saturate(1.1) hue-rotate(0deg);
+  filter: brightness(1.1) contrast(1.05) saturate(1.05) hue-rotate(0deg);
   width: 150% !important;
   height: 150% !important;
   border: none !important;
@@ -416,147 +403,86 @@ body {
   position: absolute;
   background: currentColor;
   border-radius: 50%;
-  opacity: 0.8;
-  box-shadow: 
-    0 0 20px currentColor,
-    0 0 40px currentColor,
-    0 0 60px currentColor;
-  filter: blur(1px);
+  opacity: 0.9;
+  box-shadow: 0 0 15px currentColor;
+  filter: blur(0.5px);
   mix-blend-mode: screen;
-  animation: particleGlow 4s ease-in-out infinite alternate;
+  animation: particleGlow 3s ease-in-out infinite alternate;
 }
 
 /* Different particle types */
 .particle-glow {
-  animation: glowPulse 5s ease-in-out infinite;
-  box-shadow: 
-    0 0 30px currentColor,
-    0 0 60px currentColor,
-    0 0 90px currentColor;
+  animation: glowPulse 4s ease-in-out infinite;
+  box-shadow: 0 0 20px currentColor;
 }
 
 .particle-sparkle {
-  animation: sparkleTwinkle 3s ease-in-out infinite;
-  background: radial-gradient(circle, currentColor 30%, transparent 70%);
-  box-shadow: 
-    0 0 15px currentColor,
-    0 0 30px currentColor;
+  animation: sparkleTwinkle 2s ease-in-out infinite;
+  box-shadow: 0 0 12px currentColor;
 }
 
 .particle-pulse {
-  animation: pulseGlow 4s ease-in-out infinite;
-  box-shadow: 
-    0 0 25px currentColor,
-    0 0 50px currentColor,
-    0 0 75px currentColor;
+  animation: pulseGlow 3s ease-in-out infinite;
+  box-shadow: 0 0 18px currentColor;
 }
 
 .particle-float {
-  animation: floatGlow 6s ease-in-out infinite;
-  box-shadow: 
-    0 0 20px currentColor,
-    0 0 40px currentColor;
+  animation: floatGlow 4s ease-in-out infinite;
+  box-shadow: 0 0 10px currentColor;
 }
 
 @keyframes particleGlow {
   0%, 100% {
-    opacity: 0.6;
+    opacity: 0.7;
     transform: scale(1);
-    box-shadow: 
-      0 0 20px currentColor,
-      0 0 40px currentColor;
   }
   50% {
     opacity: 1;
-    transform: scale(1.3);
-    box-shadow: 
-      0 0 30px currentColor,
-      0 0 60px currentColor,
-      0 0 90px currentColor;
+    transform: scale(1.2);
   }
 }
 
 @keyframes glowPulse {
   0%, 100% {
-    opacity: 0.7;
+    opacity: 0.8;
     transform: scale(1) rotate(0deg);
-    box-shadow: 
-      0 0 25px currentColor,
-      0 0 50px currentColor;
   }
   50% {
     opacity: 1;
-    transform: scale(1.4) rotate(180deg);
-    box-shadow: 
-      0 0 40px currentColor,
-      0 0 80px currentColor,
-      0 0 120px currentColor;
+    transform: scale(1.3) rotate(180deg);
   }
 }
 
 @keyframes sparkleTwinkle {
   0%, 100% {
-    opacity: 0.5;
-    transform: scale(0.8) rotate(0deg);
-    box-shadow: 
-      0 0 10px currentColor,
-      0 0 20px currentColor;
-  }
-  25% {
-    opacity: 1;
-    transform: scale(1.3) rotate(90deg);
-    box-shadow: 
-      0 0 20px currentColor,
-      0 0 40px currentColor;
+    opacity: 0.6;
+    transform: scale(0.9) rotate(0deg);
   }
   50% {
-    opacity: 0.7;
-    transform: scale(1) rotate(180deg);
-    box-shadow: 
-      0 0 15px currentColor,
-      0 0 30px currentColor;
-  }
-  75% {
     opacity: 1;
-    transform: scale(1.2) rotate(270deg);
-    box-shadow: 
-      0 0 18px currentColor,
-      0 0 36px currentColor;
+    transform: scale(1.2) rotate(180deg);
   }
 }
 
 @keyframes pulseGlow {
   0%, 100% {
-    opacity: 0.6;
+    opacity: 0.7;
     transform: scale(1);
-    box-shadow: 
-      0 0 20px currentColor,
-      0 0 40px currentColor;
   }
   50% {
     opacity: 1;
-    transform: scale(1.5);
-    box-shadow: 
-      0 0 35px currentColor,
-      0 0 70px currentColor,
-      0 0 105px currentColor;
+    transform: scale(1.4);
   }
 }
 
 @keyframes floatGlow {
   0%, 100% {
-    opacity: 0.7;
+    opacity: 0.8;
     transform: translateY(0) scale(1);
-    box-shadow: 
-      0 0 15px currentColor,
-      0 0 30px currentColor;
   }
   50% {
     opacity: 1;
-    transform: translateY(-15px) scale(1.2);
-    box-shadow: 
-      0 0 25px currentColor,
-      0 0 50px currentColor;
+    transform: translateY(-10px) scale(1.1);
   }
 }
 
@@ -706,6 +632,7 @@ body {
   flex: 1;
   text-align: left;
   min-width: 0;
+  padding-right: 80px; /* Make room for the badge */
 }
 
 .track-name {
