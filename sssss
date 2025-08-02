@@ -1,0 +1,33 @@
+[33mcommit 3072ac2a2b5b719986ce3b7c8faedfba1234515d[m
+Author: Cameron Dickenson <cameronrdickenson@gmail.com>
+Date:   Sat Aug 2 00:59:09 2025 -0400
+
+    Add stunning video background with random start times and seamless YouTube integration
+
+.env.example
+.gitignore
+CNAME-new
+DEPLOYMENT_GUIDE.md
+PHOTO_UPLOAD_GUIDE.md
+README.md
+deploy-test.html
+index.html
+package-lock.json
+package.json
+public/photos/README.md
+public/photos/placeholder-street.jpg
+setup-deployment.sh
+src/App-simple.tsx
+src/App-simple2.tsx
+src/App-test.tsx
+src/App.css
+src/App.tsx
+src/InteractiveHero.tsx
+src/PhotoUpload.tsx
+src/assets/react.svg
+src/index.css
+src/main.tsx
+src/photoData.ts
+src/test.css
+test.html
+vite.config.ts

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAM Portfolio - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #000;
+            color: #fff;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #4CAF50; }
+        .error { background: #f44336; }
+        .info { background: #2196F3; }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎵 CAM Portfolio Test</h1>
+        
+        <div class="status info">
+            <h3>Testing App Load</h3>
+            <p>Click the button below to test if the app loads correctly:</p>
+            <button onclick="testApp()">Test App Load</button>
+        </div>
+
+        <div id="results"></div>
+
+        <div class="status info">
+            <h3>Quick Fixes</h3>
+            <p>If the app doesn't load:</p>
+            <ol style="text-align: left;">
+                <li>Run: <code>npm install</code></li>
+                <li>Run: <code>npm run dev</code></li>
+                <li>Check browser console for errors</li>
+                <li>Make sure all files are saved</li>
+            </ol>
+        </div>
+
+        <div class="status info">
+            <h3>Last.fm Setup</h3>
+            <p>To fix Last.fm:</p>
+            <ol style="text-align: left;">
+                <li>Get API key from: <a href="https://www.last.fm/api/account/create" target="_blank">Last.fm API</a></li>
+                <li>Create <code>.env</code> file with your API key</li>
+                <li>Restart the dev server</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function testApp() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="status info">Testing...</div>';
+
+            // Test if the app can load
+            fetch('/')
+                .then(response => {
+                    if (response.ok) {
+                        results.innerHTML = '<div class="status success">✅ App loads successfully!</div>';
+                    } else {
+                        results.innerHTML = '<div class="status error">❌ App failed to load (HTTP ' + response.status + ')</div>';
+                    }
+                })
+                .catch(error => {
+                    results.innerHTML = '<div class="status error">❌ App failed to load: ' + error.message + '</div>';
+                });
+        }
+
+        // Auto-test on page load
+        window.onload = function() {
+            setTimeout(testApp, 1000);
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,219 @@
+/* YouTube Background Video CSS */
+
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    overflow: hidden;
+    background: #000;
+    color: #fff;
+}
+
+/* YouTube Background Container */
+.youtube-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+/* YouTube iframe styling */
+.youtube-background iframe {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100vw;
+    height: 100vh;
+    transform: translate(-50%, -50%) scale(1.1);
+    border: none;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 2s ease-in-out;
+    will-change: opacity;
+    backface-visibility: hidden;
+}
+
+.youtube-background iframe.loaded {
+    opacity: 1;
+}
+
+/* Hide YouTube branding and controls */
+.youtube-background iframe {
+    filter: brightness(1.1) contrast(1.1) saturate(1.1);
+}
+
+/* Additional overlay to hide any remaining YouTube elements */
+.youtube-background::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    z-index: 10;
+    pointer-events: none;
+}
+
+/* Video overlay for better text readability */
+.video-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Loading state */
+.video-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 5;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Main content positioning */
+.main-content {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Typography */
+.title {
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    margin-bottom: 2rem;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+}
+
+.subtitle {
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .youtube-background iframe {
+        transform: translate(-50%, -50%) scale(1.3);
+    }
+}
+
+@media (max-width: 480px) {
+    .youtube-background iframe {
+        transform: translate(-50%, -50%) scale(1.5);
+    }
+}
+
+/* Fallback for unsupported browsers */
+.fallback-message {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 100;
+}
+
+.fallback-message.show {
+    display: block;
+}
+
+/* Disable right-click context menu */
+.youtube-background {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Additional security measures */
+.youtube-background iframe {
+    -webkit-pointer-events: none;
+    pointer-events: none;
+}
+
+/* Ensure video covers entire screen */
+@media (min-aspect-ratio: 16/9) {
+    .youtube-background iframe {
+        width: 100vw;
+        height: 100vh;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+@media (max-aspect-ratio: 16/9) {
+    .youtube-background iframe {
+        width: 100vw;
+        height: 100vh;
+        transform: translate(-50%, -50%) scale(1.3);
+    }
+}
+
+/* Performance optimizations */
+.youtube-background iframe {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .youtube-background iframe {
+        transition: none;
+    }
+    
+    .video-loading {
+        animation: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .video-overlay {
+        background: rgba(0, 0, 0, 0.6);
+    }
+    
+    .title {
+        text-shadow: 0 0 30px rgba(0, 0, 0, 1);
+    }
+} 

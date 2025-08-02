@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Screen YouTube Background</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            background: #000;
+            color: #fff;
+        }
+
+        /* YouTube Background Container */
+        .youtube-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* YouTube iframe styling */
+        .youtube-background iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%) scale(1.1);
+            border: none;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+        }
+
+        .youtube-background iframe.loaded {
+            opacity: 1;
+        }
+
+        /* Hide YouTube branding and controls */
+        .youtube-background iframe {
+            filter: brightness(1.1) contrast(1.1) saturate(1.1);
+        }
+
+        /* Additional overlay to hide any remaining YouTube elements */
+        .youtube-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        /* Video overlay for better text readability */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Loading state */
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 5;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Main content */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .title {
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            line-height: 0.9;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .youtube-background iframe {
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .youtube-background iframe {
+                transform: translate(-50%, -50%) scale(1.5);
+            }
+        }
+
+        /* Fallback for unsupported browsers */
+        .fallback-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 100;
+        }
+
+        .fallback-message.show {
+            display: block;
+        }
+
+        /* Disable right-click context menu */
+        .youtube-background {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Additional security measures */
+        .youtube-background iframe {
+            -webkit-pointer-events: none;
+            pointer-events: none;
+        }
+
+        /* Ensure video covers entire screen */
+        @media (min-aspect-ratio: 16/9) {
+            .youtube-background iframe {
+                width: 100vw;
+                height: 100vh;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        @media (max-aspect-ratio: 16/9) {
+            .youtube-background iframe {
+                width: 100vw;
+                height: 100vh;
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- YouTube Background Video -->
+    <div class="youtube-background">
+        <div class="video-loading" id="videoLoading"></div>
+        <iframe
+            id="youtubeVideo"
+            src="https://www.youtube.com/embed/Q1LpcdlOxRo?autoplay=1&mute=1&loop=1&playlist=Q1LpcdlOxRo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&fs=0&color=white&theme=dark&wmode=transparent&origin=http://localhost:3003"
+            title="Background Video"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+            onload="videoLoaded()"
+            onerror="videoError()"
+        ></iframe>
+    </div>
+
+    <!-- Video Overlay -->
+    <div class="video-overlay"></div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="title">CAM</h1>
+        <p class="subtitle">Full-screen YouTube background video with zero branding</p>
+    </div>
+
+    <!-- Fallback Message -->
+    <div class="fallback-message" id="fallbackMessage">
+        <h3>Video Not Supported</h3>
+        <p>Your browser doesn't support the background video. Please try a modern browser.</p>
+    </div>
+
+    <script>
+        // Video loading handler
+        function videoLoaded() {
+            const video = document.getElementById('youtubeVideo');
+            const loading = document.getElementById('videoLoading');
+            
+            // Hide loading spinner
+            if (loading) {
+                loading.style.display = 'none';
+            }
+            
+            // Show video with fade-in effect
+            if (video) {
+                setTimeout(() => {
+                    video.classList.add('loaded');
+                }, 500);
+            }
+        }
+
+        // Video error handler
+        function videoError() {
+            const fallback = document.getElementById('fallbackMessage');
+            const loading = document.getElementById('videoLoading');
+            
+            if (loading) {
+                loading.style.display = 'none';
+            }
+            
+            if (fallback) {
+                fallback.classList.add('show');
+            }
+        }
+
+        // Disable right-click on video
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.closest('.youtube-background')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Prevent video interaction
+        document.addEventListener('click', function(e) {
+            if (e.target.closest('.youtube-background')) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+
+        // Handle video loading timeout
+        setTimeout(() => {
+            const video = document.getElementById('youtubeVideo');
+            const loading = document.getElementById('videoLoading');
+            
+            if (loading && loading.style.display !== 'none') {
+                videoError();
+            }
+        }, 10000); // 10 second timeout
+
+        // Ensure video is muted and autoplays
+        window.addEventListener('load', function() {
+            const video = document.getElementById('youtubeVideo');
+            if (video) {
+                // Force mute and autoplay
+                video.setAttribute('muted', 'true');
+                video.setAttribute('autoplay', 'true');
+            }
+        });
+
+        // Handle visibility change to ensure video continues playing
+        document.addEventListener('visibilitychange', function() {
+            const video = document.getElementById('youtubeVideo');
+            if (video && !document.hidden) {
+                // Refresh video source to ensure it continues playing
+                const currentSrc = video.src;
+                video.src = currentSrc;
+            }
+        });
+    </script>
+</body>
+</html> 
