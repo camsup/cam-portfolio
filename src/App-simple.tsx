@@ -28,8 +28,11 @@ function App() {
   const videoRef = useRef<HTMLIFrameElement>(null);
   const { scrollY } = useScroll();
   
-  // Use a stable start time for reliable video loading
-  const initialStartTime = 60; // Start at 1 minute for a good section
+  // Pick a random start time when the page loads
+  const [videoStartTime] = useState(() => {
+    // Video is about 20 minutes long (1200 seconds), so pick a random point between 30s and 1100s
+    return Math.floor(Math.random() * 1070) + 30;
+  });
   
   // Parallax effects
   const y = useTransform(scrollY, [0, 1000], [0, -100]);
@@ -175,7 +178,7 @@ function App() {
         )}
         <iframe
           ref={videoRef}
-          src={`https://www.youtube.com/embed/Q1LpcdlOxRo?autoplay=1&mute=1&loop=1&playlist=Q1LpcdlOxRo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&start=${initialStartTime}&fs=0&color=white&theme=dark&wmode=transparent&origin=${window.location.origin}&vq=hd1080&autohide=1&modestbranding=1&showinfo=0`}
+          src={`https://www.youtube.com/embed/Q1LpcdlOxRo?autoplay=1&mute=1&loop=1&playlist=Q1LpcdlOxRo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&start=${videoStartTime}&fs=0&color=white&theme=dark&wmode=transparent&origin=${window.location.origin}&vq=hd1080&autohide=1&modestbranding=1&showinfo=0`}
           title="Background Video"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
