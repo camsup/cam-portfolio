@@ -293,20 +293,16 @@ function App() {
                     <div className="track-name">{currentTrack.title}</div>
                     <div className="track-artist">{currentTrack.artist}</div>
                     <div className="track-album">{currentTrack.album}</div>
-                    {currentTrack.isNowPlaying && (
-                      <div className="playing-indicator">
-                        <div className="now-playing-badge">
-                          <span className="now-playing-text">NOW PLAYING</span>
-                          <div className="now-playing-bars">
-                            <div className="bar bar1"></div>
-                            <div className="bar bar2"></div>
-                            <div className="bar bar3"></div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
+                
+                {/* Live indicator */}
+                {currentTrack.isNowPlaying && (
+                  <div className="live-indicator">
+                    <div className="live-dot"></div>
+                    <span className="live-text">LIVE</span>
+                  </div>
+                )}
                 
                 {/* Music Service Buttons */}
                 <div className="music-service-buttons">
