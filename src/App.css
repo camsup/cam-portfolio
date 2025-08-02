@@ -416,93 +416,147 @@ body {
   position: absolute;
   background: currentColor;
   border-radius: 50%;
-  opacity: 0.6;
+  opacity: 0.8;
   box-shadow: 
-    0 0 12px currentColor,
-    0 0 24px currentColor,
-    0 0 36px currentColor;
-  filter: blur(0.5px);
+    0 0 20px currentColor,
+    0 0 40px currentColor,
+    0 0 60px currentColor;
+  filter: blur(1px);
   mix-blend-mode: screen;
-  animation: particleGlow 3s ease-in-out infinite alternate;
+  animation: particleGlow 4s ease-in-out infinite alternate;
 }
 
 /* Different particle types */
 .particle-glow {
-  animation: glowPulse 4s ease-in-out infinite;
+  animation: glowPulse 5s ease-in-out infinite;
+  box-shadow: 
+    0 0 30px currentColor,
+    0 0 60px currentColor,
+    0 0 90px currentColor;
 }
 
 .particle-sparkle {
-  animation: sparkleTwinkle 2s ease-in-out infinite;
+  animation: sparkleTwinkle 3s ease-in-out infinite;
+  background: radial-gradient(circle, currentColor 30%, transparent 70%);
+  box-shadow: 
+    0 0 15px currentColor,
+    0 0 30px currentColor;
 }
 
 .particle-pulse {
-  animation: pulseGlow 3s ease-in-out infinite;
+  animation: pulseGlow 4s ease-in-out infinite;
+  box-shadow: 
+    0 0 25px currentColor,
+    0 0 50px currentColor,
+    0 0 75px currentColor;
 }
 
 .particle-float {
-  animation: floatGlow 5s ease-in-out infinite;
+  animation: floatGlow 6s ease-in-out infinite;
+  box-shadow: 
+    0 0 20px currentColor,
+    0 0 40px currentColor;
 }
 
 @keyframes particleGlow {
   0%, 100% {
-    opacity: 0.3;
+    opacity: 0.6;
     transform: scale(1);
+    box-shadow: 
+      0 0 20px currentColor,
+      0 0 40px currentColor;
   }
   50% {
-    opacity: 0.8;
-    transform: scale(1.2);
+    opacity: 1;
+    transform: scale(1.3);
+    box-shadow: 
+      0 0 30px currentColor,
+      0 0 60px currentColor,
+      0 0 90px currentColor;
   }
 }
 
 @keyframes glowPulse {
   0%, 100% {
-    opacity: 0.4;
+    opacity: 0.7;
     transform: scale(1) rotate(0deg);
+    box-shadow: 
+      0 0 25px currentColor,
+      0 0 50px currentColor;
   }
   50% {
-    opacity: 0.9;
-    transform: scale(1.3) rotate(180deg);
+    opacity: 1;
+    transform: scale(1.4) rotate(180deg);
+    box-shadow: 
+      0 0 40px currentColor,
+      0 0 80px currentColor,
+      0 0 120px currentColor;
   }
 }
 
 @keyframes sparkleTwinkle {
   0%, 100% {
-    opacity: 0.2;
+    opacity: 0.5;
     transform: scale(0.8) rotate(0deg);
+    box-shadow: 
+      0 0 10px currentColor,
+      0 0 20px currentColor;
   }
   25% {
-    opacity: 0.8;
-    transform: scale(1.2) rotate(90deg);
+    opacity: 1;
+    transform: scale(1.3) rotate(90deg);
+    box-shadow: 
+      0 0 20px currentColor,
+      0 0 40px currentColor;
   }
   50% {
-    opacity: 0.4;
+    opacity: 0.7;
     transform: scale(1) rotate(180deg);
+    box-shadow: 
+      0 0 15px currentColor,
+      0 0 30px currentColor;
   }
   75% {
-    opacity: 0.9;
-    transform: scale(1.1) rotate(270deg);
+    opacity: 1;
+    transform: scale(1.2) rotate(270deg);
+    box-shadow: 
+      0 0 18px currentColor,
+      0 0 36px currentColor;
   }
 }
 
 @keyframes pulseGlow {
   0%, 100% {
-    opacity: 0.3;
+    opacity: 0.6;
     transform: scale(1);
+    box-shadow: 
+      0 0 20px currentColor,
+      0 0 40px currentColor;
   }
   50% {
-    opacity: 0.7;
-    transform: scale(1.4);
+    opacity: 1;
+    transform: scale(1.5);
+    box-shadow: 
+      0 0 35px currentColor,
+      0 0 70px currentColor,
+      0 0 105px currentColor;
   }
 }
 
 @keyframes floatGlow {
   0%, 100% {
-    opacity: 0.4;
+    opacity: 0.7;
     transform: translateY(0) scale(1);
+    box-shadow: 
+      0 0 15px currentColor,
+      0 0 30px currentColor;
   }
   50% {
-    opacity: 0.8;
-    transform: translateY(-10px) scale(1.1);
+    opacity: 1;
+    transform: translateY(-15px) scale(1.2);
+    box-shadow: 
+      0 0 25px currentColor,
+      0 0 50px currentColor;
   }
 }
 
@@ -522,6 +576,7 @@ body {
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.05);
+  position: relative;
 }
 
 .music-widget:hover {
@@ -557,21 +612,34 @@ body {
 }
 
 .playing-indicator {
-  margin-top: 0.6rem;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
   display: flex;
   justify-content: center;
 }
 
 .now-playing-badge {
-  background: linear-gradient(45deg, #1db954, #1ed760, #1db954);
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57, #ff9ff3);
+  background-size: 300% 300%;
   border-radius: 20px;
   padding: 8px 12px;
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
-  animation: badgePulse 2s ease-in-out infinite;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  animation: badgePulse 2s ease-in-out infinite, gradientShift 4s ease-in-out infinite;
   border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .now-playing-text {
@@ -581,6 +649,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .now-playing-bars {
@@ -595,6 +664,7 @@ body {
   background: white;
   border-radius: 2px;
   animation: barAnimate 1.2s ease-in-out infinite;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .bar1 {
@@ -615,11 +685,11 @@ body {
 @keyframes badgePulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   }
   50% {
     transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(29, 185, 84, 0.6);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
   }
 }
 
