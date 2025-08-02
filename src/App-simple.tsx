@@ -29,43 +29,46 @@ function App() {
   const videoRef = useRef<HTMLIFrameElement>(null);
   const { scrollY } = useScroll();
   
-  // Multiple video moments for variety
-  const videoMoments = [60, 120, 180, 240, 300, 360, 420, 480]; // Different timestamps in seconds
+  // Extensive video moments for maximum variety
+  const videoMoments = [
+    30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345, 360, 375, 390, 405, 420, 435, 450, 465, 480, 495, 510, 525, 540, 555, 570, 585, 600, 615, 630, 645, 660, 675, 690, 705, 720, 735, 750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1005, 1020, 1035, 1050, 1065, 1080, 1095, 1110, 1125, 1140, 1155, 1170, 1185, 1200
+  ]; // 80+ different timestamps for maximum variety
   
   // Parallax effects
   const y = useTransform(scrollY, [0, 1000], [0, -100]);
   const springY = useSpring(y, { stiffness: 100, damping: 30 });
 
-  // Generate enhanced colorful particles with more variety
+  // Generate premium particles with perfect balance
   useEffect(() => {
     const colors = [
       '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', 
       '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43', '#10ac84', '#ee5a24',
-      '#ff3838', '#ff6348', '#ffa502', '#2ed573', '#1e90ff', '#ff4757'
+      '#ff3838', '#ff6348', '#ffa502', '#2ed573', '#1e90ff', '#ff4757',
+      '#a55eea', '#26de81', '#fd79a8', '#fdcb6e', '#6c5ce7', '#00b894'
     ];
     
     const particleTypes = ['glow', 'sparkle', 'pulse', 'float'];
     
-    // Reduce particles on mobile for better performance
-    const particleCount = isMobile() ? 12 : 20;
+    // Perfect particle count for performance and beauty
+    const particleCount = isMobile() ? 8 : 16;
     
     const newParticles = Array.from({ length: particleCount }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
       color: colors[Math.floor(Math.random() * colors.length)],
-      size: isMobile() ? Math.random() * 2 + 1 : Math.random() * 2.5 + 1.5,
-      speed: isMobile() ? Math.random() * 2 + 1 : Math.random() * 2.5 + 1.5,
+      size: isMobile() ? Math.random() * 1.5 + 0.8 : Math.random() * 2 + 1,
+      speed: isMobile() ? Math.random() * 1.5 + 1 : Math.random() * 2 + 1.5,
       type: particleTypes[Math.floor(Math.random() * particleTypes.length)]
     }));
     setParticles(newParticles);
   }, []);
 
-  // Cycle through video moments
+  // Cycle through video moments more frequently
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentVideoMoment(prev => (prev + 1) % videoMoments.length);
-    }, 30000); // Change every 30 seconds
+    }, 20000); // Change every 20 seconds for more variety
     
     return () => clearInterval(interval);
   }, []);
@@ -120,7 +123,7 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Load animation with loading quotes
+  // Load animation with premium loading quotes
   useEffect(() => {
     const musicQuotes = [
       "Music is the universal language of mankind.",
@@ -151,13 +154,13 @@ function App() {
 
   return (
     <div className="app-container" ref={containerRef}>
-      {/* Video Background */}
+      {/* Premium Video Background */}
       <div className="video-background">
         {!videoLoaded && (
           <div className="video-loading">
             <div className="loading-content">
               <div className="loading-particles">
-                {Array.from({ length: 16 }, (_, i) => (
+                {Array.from({ length: 12 }, (_, i) => (
                   <div
                     key={i}
                     className="loading-particle"
@@ -202,7 +205,7 @@ function App() {
       
       <div className="background-grid" />
       
-      {/* Enhanced Colorful Particles */}
+      {/* Premium Floating Particles */}
       <div className="floating-particles">
         {particles.map((particle) => (
           <motion.div
@@ -216,15 +219,15 @@ function App() {
               height: `${particle.size}px`,
             }}
             animate={{
-              y: [0, -20, 0],
-              x: [0, Math.random() * 10 - 5, 0],
-              opacity: [0.3, 0.8, 0.3],
-              scale: [1, 1.2, 1],
+              y: [0, -15, 0],
+              x: [0, Math.random() * 8 - 4, 0],
+              opacity: [0.4, 0.9, 0.4],
+              scale: [1, 1.15, 1],
             }}
             transition={{
-              duration: particle.speed + Math.random() * 2,
+              duration: particle.speed + Math.random() * 1.5,
               repeat: Infinity,
-              delay: Math.random() * 3,
+              delay: Math.random() * 2,
               ease: "easeInOut"
             }}
           />
@@ -243,13 +246,14 @@ function App() {
               ease: [0.25, 0.46, 0.45, 0.94],
             }}
           >
+            {/* Premium CAM Title */}
             <motion.h1
               className="title"
               whileHover={{ 
-                scale: isMobile() ? 1.01 : 1.03,
-                textShadow: "0 0 20px rgba(255,255,255,0.4)"
+                scale: isMobile() ? 1.005 : 1.015,
+                textShadow: "0 0 15px rgba(255,255,255,0.3)"
               }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.995 }}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
@@ -259,7 +263,7 @@ function App() {
               <span className="title-letter" style={{ animationDelay: '0.3s' }}>M</span>
             </motion.h1>
             
-            {/* Compact Music Widget */}
+            {/* Ultra-Premium Music Widget */}
             {currentTrack ? (
               <motion.div
                 className="music-widget"
@@ -271,10 +275,10 @@ function App() {
                   ease: [0.25, 0.46, 0.45, 0.94]
                 }}
                 whileHover={{ 
-                  scale: isMobile() ? 1.01 : 1.02,
-                  y: isMobile() ? 0 : -2
+                  scale: isMobile() ? 1.005 : 1.01,
+                  y: isMobile() ? 0 : -1
                 }}
-                whileTap={{ scale: 0.99 }}
+                whileTap={{ scale: 0.995 }}
               >
                 <div className="track-info">
                   {currentTrack.artwork && (
@@ -311,21 +315,21 @@ function App() {
                   ease: [0.25, 0.46, 0.45, 0.94]
                 }}
                 whileHover={{ 
-                  scale: isMobile() ? 1.01 : 1.02,
-                  y: isMobile() ? 0 : -2
+                  scale: isMobile() ? 1.005 : 1.01,
+                  y: isMobile() ? 0 : -1
                 }}
-                whileTap={{ scale: 0.99 }}
+                whileTap={{ scale: 0.995 }}
               >
                 <div className="track-info">
                   <div className="artwork">
                     <div style={{ 
                       width: '100%', 
                       height: '100%', 
-                      background: 'rgba(255,255,255,0.1)', 
+                      background: 'rgba(255,255,255,0.08)', 
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
-                      fontSize: '20px'
+                      fontSize: '18px'
                     }}>
                       🎵
                     </div>
@@ -338,7 +342,7 @@ function App() {
               </motion.div>
             )}
             
-            {/* Clean Recent Tracks */}
+            {/* Ultra-Clean Recent Tracks */}
             {recentTracks.length > 0 && (
               <motion.div
                 className="recent-tracks-flowing"
@@ -359,13 +363,13 @@ function App() {
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ 
-                        delay: 0.7 + (index * 0.1), 
+                        delay: 0.7 + (index * 0.08), 
                         duration: 0.5,
                         ease: [0.25, 0.46, 0.45, 0.94]
                       }}
                       whileHover={{ 
-                        scale: 1.02,
-                        y: -1
+                        scale: 1.01,
+                        y: -0.5
                       }}
                     >
                       <div className="recent-track-flow-artwork">
