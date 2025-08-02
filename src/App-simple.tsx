@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import './App.css';
 
@@ -7,47 +7,33 @@ const isMobile = () => {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
 };
 
+
+
 interface MusicTrack {
   title: string;
   artist: string;
   album: string;
   artwork: string;
   isNowPlaying: boolean;
+  timestamp?: string;
 }
 
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [loadingQuote, setLoadingQuote] = useState('');
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
-  const [particles, setParticles] = useState<Array<{id: number, x: number, y: number, color: string, size: number, speed: number}>>([]);
+  const [recentTracks, setRecentTracks] = useState<MusicTrack[]>([]);
+  const [particles, setParticles] = useState<Array<{id: number, x: number, y: number, color: string, size: number, speed: number, type: string}>>([]);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLIFrameElement>(null);
   const { scrollY } = useScroll();
   
-  // Generate a more sophisticated random start time
-  const generateRandomStartTime = () => {
-    // Try different video lengths to find the best random range
-    const possibleLengths = [300, 600, 900, 1200]; // 5, 10, 15, 20 minutes
-    const randomLength = possibleLengths[Math.floor(Math.random() * possibleLengths.length)];
-    return Math.floor(Math.random() * randomLength);
-  };
+  // Use a stable start time for reliable video loading
+  const initialStartTime = 60; // Start at 1 minute for a good section
   
-  const initialStartTime = generateRandomStartTime();
   
-  // Memoized refresh video function to prevent infinite re-renders
-  const refreshVideo = useCallback(() => {
-    const newRandomTime = generateRandomStartTime();
-    if (videoRef.current) {
-      videoRef.current.src = `https://www.youtube.com/embed/Q1LpcdlOxRo?autoplay=1&mute=1&loop=1&playlist=Q1LpcdlOxRo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&start=${newRandomTime}&fs=0&color=white&theme=dark&wmode=transparent&origin=${window.location.origin}`;
-    }
-  }, []);
-  
-  // Refresh video with new random start time every 5 minutes
-  useEffect(() => {
-    const interval = setInterval(refreshVideo, 300000); // Refresh every 5 minutes
-    
-    return () => clearInterval(interval);
-  }, [refreshVideo]);
   
   // Parallax effects
   const y = useTransform(scrollY, [0, 1000], [0, -100]);
@@ -61,8 +47,10 @@ function App() {
       '#ff3838', '#ff6348', '#ffa502', '#2ed573', '#1e90ff', '#ff4757'
     ];
     
+    const particleTypes = ['glow', 'sparkle', 'pulse', 'float'];
+    
     // Reduce particles on mobile for better performance
-    const particleCount = isMobile() ? 12 : 20;
+    const particleCount = isMobile() ? 15 : 25;
     
     const newParticles = Array.from({ length: particleCount }, (_, i) => ({
       id: i,
@@ -71,8 +59,11 @@ function App() {
       color: colors[Math.floor(Math.random() * colors.length)],
       size: isMobile() ? Math.random() * 2 + 1.5 : Math.random() * 3 + 2, // Smaller on mobile
       speed: isMobile() ? Math.random() * 2 + 1.5 : Math.random() * 3 + 2, // Slower on mobile
+      type: particleTypes[Math.floor(Math.random() * particleTypes.length)]
     }));
     setParticles(newParticles);
+    
+
   }, []);
 
   // Fetch Last.fm data with improved error handling
@@ -93,7 +84,7 @@ function App() {
           return;
         }
         
-        const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=1`;
+        const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${username}&api_key=${apiKey}&format=json&limit=10`;
         console.log('🌐 Fetching from:', url.replace(apiKey, '***HIDDEN***'));
         
         const response = await fetch(url);
@@ -109,18 +100,19 @@ function App() {
           throw new Error(`Last.fm API Error ${data.error}: ${data.message}`);
         }
         
-        if (data.recenttracks?.track?.[0]) {
-          const track = data.recenttracks.track[0];
-          const musicTrack = {
+        if (data.recenttracks?.track) {
+          const tracks = data.recenttracks.track.map((track: any) => ({
             title: track.name,
             artist: track.artist['#text'],
             album: track.album['#text'],
             artwork: track.image[2]['#text'],
-            isNowPlaying: track['@attr']?.nowplaying === 'true'
-          };
+            isNowPlaying: track['@attr']?.nowplaying === 'true',
+            timestamp: track.date?.['#text']
+          }));
           
-          console.log('🎵 Setting track:', musicTrack);
-          setCurrentTrack(musicTrack);
+          console.log('🎵 Setting tracks:', tracks);
+          setCurrentTrack(tracks[0]); // Current/now playing track
+          setRecentTracks(tracks.slice(1, 6)); // Recent 5 tracks
         } else {
           console.log('⚠️ No tracks found in response');
         }
@@ -138,17 +130,69 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Load animation
+  // Load animation with loading quotes
   useEffect(() => {
+    const musicQuotes = [
+      "Music is the universal language of mankind.",
+      "Where words fail, music speaks.",
+      "Music is life itself.",
+      "One good thing about music, when it hits you, you feel no pain.",
+      "Music is the soundtrack of your life.",
+      "Without music, life would be a mistake.",
+      "Music is the divine way to tell beautiful, poetic things to the heart.",
+      "Music is the art of thinking with sounds.",
+      "Music is the poetry of the air.",
+      "Music is the strongest form of magic."
+    ];
+    
+    let quoteIndex = 0;
+    const quoteInterval = setInterval(() => {
+      setLoadingQuote(musicQuotes[quoteIndex]);
+      quoteIndex = (quoteIndex + 1) % musicQuotes.length;
+    }, 2000);
+    
     const timer = setTimeout(() => setIsLoaded(true), 800);
-    return () => clearTimeout(timer);
+    
+    return () => {
+      clearTimeout(timer);
+      clearInterval(quoteInterval);
+    };
   }, []);
 
   return (
     <div className="app-container" ref={containerRef}>
       {/* Video Background */}
       <div className="video-background">
-        {!videoLoaded && <div className="video-loading" />}
+        {!videoLoaded && (
+          <div className="video-loading">
+            <div className="loading-content">
+              <div className="loading-particles">
+                {Array.from({ length: 20 }, (_, i) => (
+                  <div
+                    key={i}
+                    className="loading-particle"
+                    style={{
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`,
+                      animationDelay: `${Math.random() * 2}s`,
+                      animationDuration: `${2 + Math.random() * 3}s`
+                    }}
+                  />
+                ))}
+              </div>
+              <motion.div
+                className="loading-quote"
+                key={loadingQuote}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+              >
+                "{loadingQuote}"
+              </motion.div>
+            </div>
+          </div>
+        )}
         <iframe
           ref={videoRef}
           src={`https://www.youtube.com/embed/Q1LpcdlOxRo?autoplay=1&mute=1&loop=1&playlist=Q1LpcdlOxRo&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1&iv_load_policy=3&disablekb=1&start=${initialStartTime}&fs=0&color=white&theme=dark&wmode=transparent&origin=${window.location.origin}&vq=hd1080&autohide=1&modestbranding=1&showinfo=0`}
@@ -174,7 +218,7 @@ function App() {
         {particles.map((particle) => (
           <motion.div
             key={particle.id}
-            className="particle"
+            className={`particle particle-${particle.type}`}
             style={{
               left: `${particle.x}%`,
               top: `${particle.y}%`,
@@ -197,6 +241,8 @@ function App() {
           />
         ))}
       </div>
+      
+
 
       <AnimatePresence>
         {isLoaded && (
@@ -213,15 +259,17 @@ function App() {
             <motion.h1
               className="title"
               whileHover={{ 
-                scale: isMobile() ? 1.01 : 1.02,
-                textShadow: "0 0 20px rgba(255,255,255,0.3)"
+                scale: isMobile() ? 1.02 : 1.05,
+                textShadow: "0 0 30px rgba(255,255,255,0.5)"
               }}
-              whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.95 }}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
             >
-              CAM
+              <span className="title-letter" style={{ animationDelay: '0.1s' }}>C</span>
+              <span className="title-letter" style={{ animationDelay: '0.2s' }}>A</span>
+              <span className="title-letter" style={{ animationDelay: '0.3s' }}>M</span>
             </motion.h1>
             
             {/* Last.fm Integration */}
@@ -245,17 +293,24 @@ function App() {
                   {currentTrack.artwork && (
                     <div className="artwork">
                       <img src={currentTrack.artwork} alt={currentTrack.album} />
-                      {currentTrack.isNowPlaying && (
-                        <div className="playing-indicator">
-                          <div className="pulse-dot" />
-                        </div>
-                      )}
                     </div>
                   )}
                   <div className="track-details">
                     <div className="track-name">{currentTrack.title}</div>
                     <div className="track-artist">{currentTrack.artist}</div>
                     <div className="track-album">{currentTrack.album}</div>
+                    {currentTrack.isNowPlaying && (
+                      <div className="playing-indicator">
+                        <div className="now-playing-badge">
+                          <span className="now-playing-text">NOW PLAYING</span>
+                          <div className="now-playing-bars">
+                            <div className="bar bar1"></div>
+                            <div className="bar bar2"></div>
+                            <div className="bar bar3"></div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
@@ -294,6 +349,53 @@ function App() {
                     <div className="track-artist">Add your API key to .env</div>
                     <div className="track-album">Check setup-lastfm.md</div>
                   </div>
+                </div>
+              </motion.div>
+            )}
+            
+            {/* Recent Tracks Flowing List */}
+            {recentTracks.length > 0 && (
+              <motion.div
+                className="recent-tracks-flowing"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  delay: 0.8, 
+                  duration: 0.8,
+                  ease: [0.25, 0.46, 0.45, 0.94]
+                }}
+              >
+                <div className="recent-tracks-label">Recently Played</div>
+                <div className="recent-tracks-flow">
+                  {recentTracks.map((track, index) => (
+                    <motion.div
+                      key={`${track.title}-${track.artist}-${index}`}
+                      className="recent-track-flow-item"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ 
+                        delay: 0.9 + (index * 0.15), 
+                        duration: 0.6,
+                        ease: [0.25, 0.46, 0.45, 0.94]
+                      }}
+                      whileHover={{ 
+                        scale: 1.05,
+                        y: -2
+                      }}
+                    >
+                      <div className="recent-track-flow-artwork">
+                        {track.artwork ? (
+                          <img src={track.artwork} alt={track.album} />
+                        ) : (
+                          <div className="recent-track-flow-placeholder">🎵</div>
+                        )}
+                      </div>
+                      <div className="recent-track-flow-info">
+                        <div className="recent-track-flow-name">{track.title}</div>
+                        <div className="recent-track-flow-artist">{track.artist}</div>
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
               </motion.div>
             )}
