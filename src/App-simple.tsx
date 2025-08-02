@@ -19,7 +19,7 @@ interface MusicTrack {
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
-  const [loadingQuote, setLoadingQuote] = useState('');
+  const [loadingQuote, setLoadingQuote] = useState('Music is the universal language of mankind.');
   const [currentTrack, setCurrentTrack] = useState<MusicTrack | null>(null);
   const [recentTracks, setRecentTracks] = useState<MusicTrack[]>([]);
   const [particles, setParticles] = useState<Array<{id: number, x: number, y: number, color: string, size: number, speed: number, type: string}>>([]);
