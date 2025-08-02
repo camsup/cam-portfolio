@@ -1,17 +1,10 @@
 {
-  "buildCommand": "npm install && npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "installCommand": "npm install",
   "rewrites": [
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "dist/**/*.html": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 } 
