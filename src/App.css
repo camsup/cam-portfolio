@@ -369,9 +369,9 @@ body {
 }
 
 .title-letter:hover {
-  animation: letterGlitch 0.3s ease-in-out;
-  transform: scale(1.1) translateY(-5px);
-  text-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+  transform: scale(1.02) translateY(-2px);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
 }
 
 @keyframes letterAppear {
@@ -394,19 +394,19 @@ body {
     transform: translateX(0) scale(1);
   }
   25% {
-    transform: translateX(-2px) scale(1.05);
+    transform: translateX(-1px) scale(1.01);
   }
   50% {
-    transform: translateX(2px) scale(1.1);
+    transform: translateX(1px) scale(1.02);
   }
   75% {
-    transform: translateX(-1px) scale(1.05);
+    transform: translateX(-0.5px) scale(1.01);
   }
 }
 
 .title:hover {
-  transform: scale(1.02);
-  text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+  transform: scale(1.01);
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
 }
 
 /* Background Grid */
