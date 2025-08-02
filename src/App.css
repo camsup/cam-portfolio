@@ -367,10 +367,10 @@ body {
   left: -10px;
   right: -10px;
   bottom: -10px;
-  background: linear-gradient(45deg, 
-    rgba(255, 255, 255, 0.05) 0%, 
-    rgba(255, 255, 255, 0.02) 50%, 
-    rgba(255, 255, 255, 0.05) 100%);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.08) 0%, 
+    rgba(255, 255, 255, 0.03) 50%, 
+    rgba(255, 255, 255, 0.08) 100%);
   border-radius: 20px;
   z-index: -1;
   opacity: 0;
@@ -384,7 +384,7 @@ body {
 
 .title-letter {
   display: inline-block;
-  animation: letterAppear 1.5s ease-out forwards;
+  animation: letterAppear 1.5s ease-out forwards, subtleFloat 6s ease-in-out infinite;
   opacity: 0;
   transform: translateY(20px) rotateX(90deg);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -396,6 +396,51 @@ body {
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
 }
 
+/* Glass-like color effects for each letter */
+.title-letter:nth-child(1) {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.95) 0%, 
+    rgba(255, 255, 255, 0.85) 50%, 
+    rgba(255, 255, 255, 0.95) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.8),
+    0 0 40px rgba(255, 255, 255, 0.4),
+    0 0 60px rgba(255, 255, 255, 0.2);
+}
+
+.title-letter:nth-child(2) {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(240, 248, 255, 0.8) 30%, 
+    rgba(230, 240, 255, 0.9) 70%, 
+    rgba(255, 255, 255, 0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 20px rgba(240, 248, 255, 0.8),
+    0 0 40px rgba(230, 240, 255, 0.4),
+    0 0 60px rgba(220, 230, 255, 0.2);
+}
+
+.title-letter:nth-child(3) {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(248, 250, 255, 0.8) 30%, 
+    rgba(245, 248, 255, 0.9) 70%, 
+    rgba(255, 255, 255, 0.9) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 20px rgba(248, 250, 255, 0.8),
+    0 0 40px rgba(245, 248, 255, 0.4),
+    0 0 60px rgba(240, 245, 255, 0.2);
+}
+
 .title-letter::after {
   content: '';
   position: absolute;
@@ -404,9 +449,9 @@ body {
   right: 0;
   bottom: 0;
   background: linear-gradient(45deg, 
-    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.15) 0%, 
     transparent 50%, 
-    rgba(255, 255, 255, 0.1) 100%);
+    rgba(255, 255, 255, 0.15) 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
   border-radius: 4px;
@@ -421,6 +466,51 @@ body {
     0 0 90px rgba(255, 255, 255, 0.2);
   filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Enhanced hover effects with color */
+.title-letter:nth-child(1):hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(255, 255, 255, 0.95) 50%, 
+    rgba(255, 255, 255, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 30px rgba(255, 255, 255, 1),
+    0 0 60px rgba(255, 255, 255, 0.6),
+    0 0 90px rgba(255, 255, 255, 0.3);
+}
+
+.title-letter:nth-child(2):hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(240, 248, 255, 0.95) 30%, 
+    rgba(230, 240, 255, 1) 70%, 
+    rgba(255, 255, 255, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 30px rgba(240, 248, 255, 1),
+    0 0 60px rgba(230, 240, 255, 0.6),
+    0 0 90px rgba(220, 230, 255, 0.3);
+}
+
+.title-letter:nth-child(3):hover {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(248, 250, 255, 0.95) 30%, 
+    rgba(245, 248, 255, 1) 70%, 
+    rgba(255, 255, 255, 1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 
+    0 0 30px rgba(248, 250, 255, 1),
+    0 0 60px rgba(245, 248, 255, 0.6),
+    0 0 90px rgba(240, 245, 255, 0.3);
 }
 
 .title-letter:hover::after {
@@ -504,6 +594,12 @@ body {
 
 .title-letter:hover {
   transform: scale(1.05) translateY(-3px);
+  text-shadow: 
+    0 0 30px rgba(255, 255, 255, 0.9),
+    0 0 60px rgba(255, 255, 255, 0.4),
+    0 0 90px rgba(255, 255, 255, 0.2);
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.4));
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 /* Background Grid */
