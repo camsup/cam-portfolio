@@ -368,9 +368,9 @@ body {
 }
 
 .title-letter:hover {
-  animation: letterGlitch 0.3s ease-in-out;
-  transform: scale(1.1) translateY(-5px);
-  text-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+  animation: letterGlitch 0.4s ease-in-out;
+  transform: scale(1.05) translateY(-2px);
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
 }
 
 @keyframes letterAppear {
@@ -392,22 +392,22 @@ body {
 
 @keyframes letterGlitch {
   0%, 100% {
-    transform: translateX(0) scale(1);
+    transform: translateX(0) scale(1.05) translateY(-2px);
   }
   25% {
-    transform: translateX(-2px) scale(1.05);
+    transform: translateX(-1px) scale(1.05) translateY(-2px);
   }
   50% {
-    transform: translateX(2px) scale(1.1);
+    transform: translateX(1px) scale(1.05) translateY(-2px);
   }
   75% {
-    transform: translateX(-1px) scale(1.05);
+    transform: translateX(-0.5px) scale(1.05) translateY(-2px);
   }
 }
 
 .title:hover {
-  transform: scale(1.02);
-  text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+  transform: scale(1.01);
+  text-shadow: 0 0 25px rgba(255, 255, 255, 0.15);
 }
 
 /* Background Grid */
@@ -570,39 +570,41 @@ body {
 
 /* Music Widget */
 .music-widget {
-  margin-top: 2rem;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 1.5rem;
-  max-width: 400px;
+  margin-top: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1rem;
+  max-width: 320px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  backdrop-filter: blur(15px);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .music-widget:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .track-info {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.75rem;
 }
 
 .artwork {
   position: relative;
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
   border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .artwork img {
@@ -612,25 +614,25 @@ body {
 }
 
 .playing-indicator {
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
   display: flex;
   justify-content: center;
 }
 
 .now-playing-badge {
   background: linear-gradient(45deg, #1db954, #1ed760);
-  border-radius: 20px;
-  padding: 8px 12px;
+  border-radius: 16px;
+  padding: 6px 10px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 15px rgba(29, 185, 84, 0.4);
+  gap: 6px;
+  box-shadow: 0 3px 12px rgba(29, 185, 84, 0.3);
   animation: badgePulse 2s ease-in-out infinite;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .now-playing-text {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
   color: white;
   text-transform: uppercase;
@@ -642,13 +644,13 @@ body {
   display: flex;
   align-items: flex-end;
   gap: 2px;
-  height: 16px;
+  height: 14px;
 }
 
 .bar {
-  width: 3px;
+  width: 2px;
   background: white;
-  border-radius: 2px;
+  border-radius: 1px;
   animation: barAnimate 1.2s ease-in-out infinite;
 }
 
@@ -694,30 +696,23 @@ body {
 }
 
 .track-name {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: #ffffff;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 .track-artist {
-  font-size: 0.8rem;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 0.25rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.track-album {
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.7);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 /* Loading animation */
@@ -787,9 +782,9 @@ body {
   
   .music-widget {
     margin-top: 0;
-    padding: 1.25rem;
+    padding: 1rem;
     width: 100%;
-    max-width: 320px;
+    max-width: 280px;
     border-radius: 16px;
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -798,14 +793,14 @@ body {
   }
   
   .track-info {
-    gap: 1rem;
+    gap: 0.75rem;
     align-items: center;
   }
   
   .artwork {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
     flex-shrink: 0;
   }
   
@@ -815,21 +810,15 @@ body {
   }
   
   .track-name {
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
     line-height: 1.2;
   }
   
   .track-artist {
-    font-size: 0.9rem;
-    opacity: 0.8;
-    margin-bottom: 0.25rem;
-  }
-  
-  .track-album {
     font-size: 0.8rem;
-    opacity: 0.6;
+    opacity: 0.8;
   }
 }
 
@@ -1066,17 +1055,17 @@ body {
 .recent-tracks-flowing {
   margin-top: 1rem;
   width: 100%;
-  max-width: 400px;
+  max-width: 320px;
   margin-left: auto;
   margin-right: auto;
   text-align: center;
 }
 
 .recent-tracks-label {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.6rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -1084,7 +1073,7 @@ body {
 .recent-tracks-flow {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
   align-items: center;
 }
 
@@ -1092,13 +1081,13 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 20px;
+  padding: 0.35rem 0.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   cursor: pointer;
-  max-width: 320px;
+  max-width: 280px;
   width: 100%;
   margin: 0 auto;
   animation: flowCycle 8s ease-in-out infinite;
@@ -1112,39 +1101,41 @@ body {
 
 @keyframes flowCycle {
   0%, 100% { 
-    opacity: 0.6; 
-    transform: scale(0.9) translateY(0);
+    opacity: 0.5; 
+    transform: scale(0.95) translateY(0);
     background: rgba(255, 255, 255, 0.02);
   }
   20%, 80% { 
     opacity: 1; 
-    transform: scale(1) translateY(-2px);
-    background: rgba(255, 255, 255, 0.05);
+    transform: scale(1) translateY(-1px);
+    background: rgba(255, 255, 255, 0.04);
   }
   50% { 
-    opacity: 0.8; 
-    transform: scale(0.95) translateY(-1px);
+    opacity: 0.7; 
+    transform: scale(0.98) translateY(-0.5px);
     background: rgba(255, 255, 255, 0.03);
   }
 }
 
 .recent-track-flow-item:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.15);
-  transform: scale(1.05) translateY(-2px);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: scale(1.02) translateY(-1px);
   animation-play-state: paused;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .recent-track-flow-artwork {
-  width: 28px;
-  height: 28px;
-  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
   overflow: hidden;
   flex-shrink: 0;
   background: rgba(255, 255, 255, 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
 }
 
 .recent-track-flow-artwork img {
@@ -1165,7 +1156,7 @@ body {
 }
 
 .recent-track-flow-name {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
   white-space: nowrap;
@@ -1175,7 +1166,7 @@ body {
 }
 
 .recent-track-flow-artist {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   color: rgba(255, 255, 255, 0.6);
   white-space: nowrap;
   overflow: hidden;
