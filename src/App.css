@@ -705,14 +705,15 @@ body {
     left: 50%;
     width: 100vw;
     height: 100vh;
-    transform: translate(-50%, -50%) scale(3);
+    transform: translate(-50%, -50%) scale(2);
     object-fit: cover;
     object-position: center;
+    animation: mobileSubtleZoom 15s ease-in-out infinite alternate;
   }
   
   @keyframes mobileSubtleZoom {
-    0%, 100% { transform: translate(-50%, -50%) scale(3); }
-    50% { transform: translate(-50%, -50%) scale(3.1); }
+    0% { transform: translate(-50%, -50%) scale(2); }
+    100% { transform: translate(-50%, -50%) scale(2.05); }
   }
   
   .video-overlay {
@@ -783,7 +784,7 @@ body {
     left: 50%;
     width: 100vw;
     height: 100vh;
-    transform: translate(-50%, -50%) scale(5);
+    transform: translate(-50%, -50%) scale(2);
     object-fit: cover;
     object-position: center;
   }
@@ -881,7 +882,7 @@ body {
     left: 50%;
     width: 100vw;
     height: 100vh;
-    transform: translate(-50%, -50%) scale(4.5);
+    transform: translate(-50%, -50%) scale(2);
     object-fit: cover;
     object-position: center;
   }
