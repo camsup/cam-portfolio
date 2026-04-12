@@ -24,8 +24,8 @@ struct SubnetInfo {
     network_addr: u32,
     broadcast_addr: u32,
     subnet_mask: u32,
-    total_hosts: u32,
-    usable_hosts: u32,
+    total_hosts: u64,
+    usable_hosts: u64,
 }
 
 fn parse_cidr(cidr: &str) -> Result<SubnetInfo, String> {
@@ -75,11 +75,11 @@ fn parse_cidr(cidr: &str) -> Result<SubnetInfo, String> {
     // Broadcast = network address OR NOT mask (sets all host bits to 1)
     let broadcast_addr = network_addr | !subnet_mask;
 
-    // Total addresses in the block
-    let total_hosts = 2u32.pow(32 - prefix as u32);
+    // Total addresses in the block — use u64 because /0 = 2^32 overflows u32
+    let total_hosts: u64 = 1u64 << (32 - prefix as u64);
 
     // Usable = total minus network and broadcast addresses
-    let usable_hosts = if total_hosts > 2 { total_hosts - 2 } else { 0 };
+    let usable_hosts: u64 = if total_hosts > 2 { total_hosts - 2 } else { 0 };
 
     Ok(SubnetInfo {
         ip,
