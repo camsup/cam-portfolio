@@ -14,7 +14,9 @@ const targets = {
   sweetsgeeks_shopify: 'https://sweets-and-geeks.myshopify.com/products.json?limit=250',
   rozaypoke_shopify: 'https://shiprozaypoke.com/products.json?limit=250',
   empire_shopify: 'https://empiregamecenter.com/products.json?limit=250',
-  fullgrip_shopify: 'https://fullgripgames.com/products.json?limit=250'
+  fullgrip_shopify: 'https://fullgripgames.com/products.json?limit=250',
+  goldglory_fingerprint: 'https://www.goldandglorygaming.com/',
+  gotz_fingerprint: 'https://www.gotzalotofgames.com/'
 };
 
 const terms = [
@@ -49,6 +51,45 @@ export default async function handler(req, res) {
       redirect: 'follow'
     });
     const html = await r.text();
+
+    if (mode.endsWith('_fingerprint')) {
+      const base = new URL(url).origin;
+      const lower = html.toLowerCase();
+      const platform = lower.includes('squareup') || lower.includes('square.site') || lower.includes('weebly')
+        ? 'square_weebly'
+        : lower.includes('cdn.shopify.com') || lower.includes('shopify')
+          ? 'shopify'
+          : lower.includes('wixstatic') || lower.includes('wix.com')
+            ? 'wix'
+            : 'unknown';
+      const commonSitemaps = ['/sitemap.xml','/sitemap_index.xml','/robots.txt'];
+      const discovery = [];
+      for (const path of commonSitemaps) {
+        try {
+          const sr = await fetch(base + path, {
+            headers: {
+              'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36',
+              'accept-language': 'en-US,en;q=0.9'
+            },
+            redirect:'follow'
+          });
+          const text = await sr.text();
+          discovery.push({path,status:sr.status,text:text.slice(0,60000)});
+        } catch (e) {
+          discovery.push({path,status:0,error:String(e?.message||e)});
+        }
+      }
+      const joined = [html, ...discovery.map(x=>x.text||'')].join('\n');
+      const urls = [...joined.matchAll(/https?:\/\/[^"'<>\s]+/g)].map(m=>m[0].replace(/&amp;/g,'&'));
+      const productUrls = [...new Set(urls.filter(u => /(\/product\/|\/products\/|\/shop\/|pokemon|pok%C3%A9mon|poke-mon)/i.test(u)))].slice(0,80);
+      const pokemonText = strip(joined).match(/.{0,120}(?:pokemon|pokémon).{0,220}/ig)?.slice(0,30) || [];
+      return res.status(200).json({
+        ok:true, mode, retailerStatus:r.status, finalUrl:r.url, platform,
+        sitemapStatuses: discovery.map(x=>({path:x.path,status:x.status})),
+        productUrls,
+        pokemonText
+      });
+    }
 
     if (mode.endsWith('_shopify')) {
       let parsed = {};
