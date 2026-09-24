@@ -9,11 +9,12 @@ export default async function handler(req, res) {
   if (token.length < 20) return res.status(400).json({ ok: false, error: 'missing_token' });
 
   const type = clean(req.query?.type, 32) || 'STOCKING_LEAD';
-  if (!['STOCKING_LEAD', 'CURRENT_STOCK', 'NO_STOCK'].includes(type)) {
+  if (!['STOCKING_LEAD', 'CURRENT_STOCK', 'NO_STOCK', 'PRANK_TEST'].includes(type)) {
     return res.status(400).json({ ok: false, error: 'invalid_type' });
   }
 
   const retailer = clean(req.query?.retailer, 80);
+  const prankMessage = String(req.query?.message ?? '').slice(0, 3500);
   const store = clean(req.query?.store, 140);
   const product = clean(req.query?.product, 180) ||
     (type === 'NO_STOCK' ? 'No qualifying sealed Pokémon stock detected' : '');
@@ -24,21 +25,29 @@ export default async function handler(req, res) {
     return res.status(400).json({ ok: false, error: 'missing_fields' });
   }
 
-  const title = type === 'CURRENT_STOCK'
-    ? '🚨 CURRENT STOCK — ' + retailer
-    : type === 'NO_STOCK'
-      ? '💀 NO STOCK — ' + retailer
-      : '🔥 STOCKING LEAD — ' + retailer;
+  const title = type === 'PRANK_TEST'
+    ? '🚨 CURRENT STOCK — ' + retailer.toUpperCase() + ' 🚨'
+    : type === 'CURRENT_STOCK'
+      ? '🚨 CURRENT STOCK — ' + retailer
+      : type === 'NO_STOCK'
+        ? '💀 NO STOCK — ' + retailer
+        : '🔥 STOCKING LEAD — ' + retailer;
 
-  const statusLine = type === 'CURRENT_STOCK'
-    ? '✅ Verified current-stock evidence. Check source before driving.'
+  if (type === 'PRANK_TEST' && !/TROLL ALERT — THIS INVENTORY IS COMPLETELY MADE UP/i.test(prankMessage)) {
+    return res.status(400).json({ ok: false, error: 'prank_disclosure_required' });
+  }
+
+  const statusLine = type === 'PRANK_TEST'
+    ? ''
+    : type === 'CURRENT_STOCK'
+      ? '✅ Verified current-stock evidence. Check source before driving.'
     : type === 'NO_STOCK'
       ? '🐀 Scalper rats smoked this hoe. Waiting for new stock.'
       : '⚠️ Stocking lead — not confirmed shelf quantity.';
 
   const embed = {
     title,
-    description: [
+    description: type === 'PRANK_TEST' ? prankMessage : [
       '**' + product + '**',
       '**Store:** ' + store,
       details,
