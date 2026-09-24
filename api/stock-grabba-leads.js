@@ -9,13 +9,14 @@ export default async function handler(req, res) {
   if (token.length < 20) return res.status(400).json({ ok: false, error: 'missing_token' });
 
   const type = clean(req.query?.type, 32) || 'STOCKING_LEAD';
-  if (!['STOCKING_LEAD', 'CURRENT_STOCK'].includes(type)) {
+  if (!['STOCKING_LEAD', 'CURRENT_STOCK', 'NO_STOCK'].includes(type)) {
     return res.status(400).json({ ok: false, error: 'invalid_type' });
   }
 
   const retailer = clean(req.query?.retailer, 80);
   const store = clean(req.query?.store, 140);
-  const product = clean(req.query?.product, 180);
+  const product = clean(req.query?.product, 180) ||
+    (type === 'NO_STOCK' ? 'No qualifying sealed Pokémon stock detected' : '');
   const details = clean(req.query?.details, 900);
   const source = clean(req.query?.source, 600);
 
@@ -25,7 +26,15 @@ export default async function handler(req, res) {
 
   const title = type === 'CURRENT_STOCK'
     ? '🚨 CURRENT STOCK — ' + retailer
-    : '🔥 STOCKING LEAD — ' + retailer;
+    : type === 'NO_STOCK'
+      ? '💀 NO STOCK — ' + retailer
+      : '🔥 STOCKING LEAD — ' + retailer;
+
+  const statusLine = type === 'CURRENT_STOCK'
+    ? '✅ Verified current-stock evidence. Check source before driving.'
+    : type === 'NO_STOCK'
+      ? '🐀 Scalper rats smoked this hoe. Waiting for new stock.'
+      : '⚠️ Stocking lead — not confirmed shelf quantity.';
 
   const embed = {
     title,
@@ -34,9 +43,7 @@ export default async function handler(req, res) {
       '**Store:** ' + store,
       details,
       '',
-      type === 'CURRENT_STOCK'
-        ? '✅ Verified current-stock evidence. Check source before driving.'
-        : '⚠️ Stocking lead — not confirmed shelf quantity.'
+      statusLine
     ].join('\n'),
     url: source,
     footer: { text: 'Pokémon Stock Grabba • Parma 44129' },
@@ -44,7 +51,7 @@ export default async function handler(req, res) {
   };
 
   if (req.query?.dry === '1') {
-    return res.status(200).json({ ok: true, dryRun: true, type, retailer, store, product });
+    return res.status(200).json({ ok: true, dryRun: true, type, retailer, store, product, statusLine });
   }
 
   const webhook = 'https://discord.com/api/webhooks/1552482750747906048/' + token + '?wait=true';
@@ -68,7 +75,7 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({ ok: true, messageId: parsed.id, type });
-  } catch (error) {
+  } catch {
     return res.status(500).json({ ok: false, error: 'relay_error' });
   }
 }
