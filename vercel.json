@@ -2,9 +2,8 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/grabba", "destination": "/grabba.html" },
+    { "source": "/grabba/", "destination": "/grabba.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
-} 
+}
