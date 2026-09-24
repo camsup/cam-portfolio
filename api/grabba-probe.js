@@ -5,7 +5,11 @@ const targets = {
   microcenter_poster: 'https://www.microcenter.com/product/715609/nintendo-pokemon-tcg-30th-celebration-poster-collection?storeid=029',
   microcenter_search: 'https://www.microcenter.com/search/search_results.aspx?Ntt=Pokemon+30th+Celebration&storeid=029',
   walmart_30th: 'https://www.walmart.com/search?q=Pokemon+30th+Celebration',
-  cvs_pokemon: 'https://www.cvs.com/search?searchTerm=Pokemon'
+  cvs_pokemon: 'https://www.cvs.com/search?searchTerm=Pokemon',
+  cardsintheland_shopify: 'https://cardsintheland.com/products.json?limit=250',
+  geekpeek_shopify: 'https://www.thegeekpeek.com/products.json?limit=250',
+  gamershaven_shopify: 'https://gamershavenohio.shop/products.json?limit=250',
+  superscript_shopify: 'https://www.superscriptohio.com/products.json?limit=250'
 };
 
 const terms = [
@@ -40,6 +44,37 @@ export default async function handler(req, res) {
       redirect: 'follow'
     });
     const html = await r.text();
+
+    if (mode.endsWith('_shopify')) {
+      let parsed = {};
+      try { parsed = JSON.parse(html); } catch {
+        return res.status(200).json({ ok:true, mode, retailerStatus:r.status, finalUrl:r.url, parseError:true, products:[] });
+      }
+      const host = new URL(url).origin;
+      const sealed = /(pokemon|pokémon)/i;
+      const wanted = /(elite trainer|\betb\b|booster|bundle|tin|collection|box|pack|blister|poster|sticker|premium|knock out|first partner|30th|mega evolution|chaos rising|pitch black)/i;
+      const products = (parsed.products || [])
+        .filter(p => sealed.test(String(p.title || '') + ' ' + String(p.tags || '')))
+        .map(p => {
+          const variants = Array.isArray(p.variants) ? p.variants : [];
+          const availableVariants = variants.filter(v => v.available === true);
+          const prices = availableVariants.map(v => Number(v.price)).filter(Number.isFinite);
+          return {
+            id:p.id,
+            title:p.title,
+            handle:p.handle,
+            url: host + '/products/' + p.handle,
+            available: availableVariants.length > 0,
+            availableVariantCount: availableVariants.length,
+            minAvailablePrice: prices.length ? Math.min(...prices) : null,
+            tags:p.tags || []
+          };
+        })
+        .filter(p => wanted.test(p.title))
+        .slice(0,120);
+      return res.status(200).json({ ok:true, mode, retailerStatus:r.status, finalUrl:r.url, products });
+    }
+
     const plain = strip(html);
     const lower = plain.toLowerCase();
     const snippets = [];
