@@ -52,7 +52,9 @@ export default async function handler(req, res) {
       '**Store:** ' + store,
       details,
       '',
-      statusLine
+      statusLine,
+      '',
+      '🔗 **Product/source page:** ' + source
     ].join('\n'),
     url: source,
     footer: { text: 'Pokémon Stock Grabba • Parma 44129' },
