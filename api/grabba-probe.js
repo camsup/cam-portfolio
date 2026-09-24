@@ -12,7 +12,9 @@ const targets = {
   superscript_shopify: 'https://www.superscriptohio.com/products.json?limit=250',
   marzcardz_shopify: 'https://marzcardz.shop/products.json?limit=250',
   sweetsgeeks_shopify: 'https://sweets-and-geeks.myshopify.com/products.json?limit=250',
-  rozaypoke_shopify: 'https://shiprozaypoke.com/products.json?limit=250'
+  rozaypoke_shopify: 'https://shiprozaypoke.com/products.json?limit=250',
+  empire_shopify: 'https://empiregamecenter.com/products.json?limit=250',
+  fullgrip_shopify: 'https://fullgripgames.com/products.json?limit=250'
 };
 
 const terms = [
@@ -54,10 +56,15 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok:true, mode, retailerStatus:r.status, finalUrl:r.url, parseError:true, products:[] });
       }
       const host = new URL(url).origin;
-      const sealed = /(pokemon|pokémon)/i;
-      const wanted = /(elite trainer|\betb\b|booster|bundle|tin|collection|box|pack|blister|poster|sticker|premium|knock out|first partner|30th|mega evolution|chaos rising|pitch black)/i;
+      const pokemonSignal = /(pokemon|pokémon|perfect order|chaos rising|pitch black|prismatic evolutions|destined rivals|black bolt|white flare|surging sparks|journey together|ascended heroes|30th celebration|first partner illustration|mega evolution|delta reign|phantasmal flames)/i;
+      const wanted = /(elite trainer|\betb\b|booster|bundle|tin|collection|box|pack|blister|poster|tech sticker|premium|knock out|first partner|30th|mega evolution|chaos rising|pitch black|perfect order|delta reign)/i;
+      const junk = /(blind pack|figure series|leisure time|plush|funko|binder page|deck box|playmat|card sleeve|toploader|single card|\bpsa\b|\bcgc\b|graded)/i;
+      const pokemonOnlyStore = mode === 'rozaypoke_shopify';
       const products = (parsed.products || [])
-        .filter(p => sealed.test(String(p.title || '') + ' ' + String(p.tags || '')))
+        .filter(p => {
+          const hay = String(p.title || '') + ' ' + String(p.tags || '');
+          return (pokemonOnlyStore || pokemonSignal.test(hay)) && wanted.test(String(p.title || '')) && !junk.test(String(p.title || ''));
+        })
         .map(p => {
           const variants = Array.isArray(p.variants) ? p.variants : [];
           const availableVariants = variants.filter(v => v.available === true);
@@ -73,7 +80,6 @@ export default async function handler(req, res) {
             tags:p.tags || []
           };
         })
-        .filter(p => wanted.test(p.title))
         .slice(0,120);
       return res.status(200).json({ ok:true, mode, retailerStatus:r.status, finalUrl:r.url, products });
     }
