@@ -16,7 +16,9 @@ const targets = {
   empire_shopify: 'https://empiregamecenter.com/products.json?limit=250',
   fullgrip_shopify: 'https://fullgripgames.com/products.json?limit=250',
   goldglory_fingerprint: 'https://www.goldandglorygaming.com/',
-  gotz_fingerprint: 'https://www.gotzalotofgames.com/'
+  gotz_fingerprint: 'https://www.gotzalotofgames.com/',
+  goldglory_square: 'https://www.goldandglorygaming.com/sitemap.xml',
+  gotz_talech: 'https://microsite.talech.com/shop/GOTZ-A-LOT-OF-GAMES-PARMA-OH/DOmkJw4Z7xxYpzb7'
 };
 
 const terms = [
@@ -51,6 +53,75 @@ export default async function handler(req, res) {
       redirect: 'follow'
     });
     const html = await r.text();
+
+    if (mode.endsWith('_square')) {
+      const xml = html;
+      const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1].replace(/&amp;/g,'&'));
+      const candidateUrls = [...new Set(urls.filter(u =>
+        /\/product\//i.test(u) &&
+        /(pokemon|pok-mon|poke-mon)/i.test(u) &&
+        /(booster|bundle|elite-trainer|etb|tin|collection|blister|pack|30th|mega|prismatic|destined|journey|surging|twilight|paradox|paldean|shrouded)/i.test(u)
+      ))].slice(0,30);
+
+      const products = [];
+      for (const productUrl of candidateUrls) {
+        try {
+          const pr = await fetch(productUrl, {
+            headers: {
+              'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/140 Safari/537.36',
+              'accept-language': 'en-US,en;q=0.9'
+            },
+            redirect:'follow'
+          });
+          const page = await pr.text();
+          const plain = strip(page);
+          const titleMatch = page.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
+          const h1Match = page.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
+          const title = strip((h1Match && h1Match[1]) || (titleMatch && titleMatch[1]) || productUrl);
+          const prices = [...plain.matchAll(/\$\d{1,3}(?:\.\d{2})?/g)].map(m=>m[0]);
+          const addToCart = /add to cart/i.test(plain);
+          const pickup = /store pickup|in-store pickup|pickup/i.test(plain);
+          const soldOut = /sold out|out of stock|unavailable/i.test(plain);
+          const tcgLike = /(pokemon|pokémon)/i.test(title) && /(booster|bundle|elite trainer|\betb\b|tin|collection|blister|pack|30th|mega)/i.test(title);
+          if (tcgLike) {
+            products.push({
+              title,
+              url:productUrl,
+              status:pr.status,
+              addToCart,
+              pickup,
+              soldOut,
+              prices:[...new Set(prices)].slice(0,8),
+              snippet: plain.slice(0,900)
+            });
+          }
+        } catch (e) {
+          products.push({url:productUrl,error:String(e?.message||e)});
+        }
+      }
+      return res.status(200).json({
+        ok:true, mode, retailerStatus:r.status, finalUrl:r.url,
+        candidateCount:candidateUrls.length,
+        products
+      });
+    }
+
+    if (mode.endsWith('_talech')) {
+      const plain = strip(html);
+      const urls = [...html.matchAll(/https?:\/\/[^"'<>\s]+/g)].map(m=>m[0].replace(/&amp;/g,'&'));
+      const endpoints = [...new Set(urls.filter(u =>
+        /(api|graphql|catalog|inventory|menu|product|shop|talech)/i.test(u)
+      ))].slice(0,120);
+      const scriptSrc = [...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m=>m[1]);
+      const pokemonText = plain.match(/.{0,160}(?:pokemon|pokémon|tcg|trading card).{0,260}/ig)?.slice(0,40) || [];
+      return res.status(200).json({
+        ok:true, mode, retailerStatus:r.status, finalUrl:r.url,
+        endpoints,
+        scriptSrc:scriptSrc.slice(0,80),
+        pokemonText,
+        snippet:plain.slice(0,2500)
+      });
+    }
 
     if (mode.endsWith('_fingerprint')) {
       const base = new URL(url).origin;
