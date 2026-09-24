@@ -24,8 +24,11 @@ function classify(meta, data) {
   if (!data || data.ok !== true) {
     return { status: 'ERROR', confidence: 'LOW', detail: data?.error || 'probe failed' };
   }
-  if (data.blocked) {
+  if (data.blocked || /\/blocked(?:\?|$)/i.test(String(data.finalUrl || '')) || Number(data.retailerStatus) === 403) {
     return { status: 'BLOCKED', confidence: 'LOW', detail: 'Retailer blocked the public probe.' };
+  }
+  if (Number(data.retailerStatus) >= 400) {
+    return { status: 'ERROR', confidence: 'LOW', detail: 'First-party endpoint returned HTTP ' + data.retailerStatus + '.' };
   }
 
   if (meta.mode === 'microcenter_search') {
