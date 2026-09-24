@@ -9,7 +9,10 @@ const targets = {
   cardsintheland_shopify: 'https://cardsintheland.com/products.json?limit=250',
   geekpeek_shopify: 'https://www.thegeekpeek.com/products.json?limit=250',
   gamershaven_shopify: 'https://gamershavenohio.shop/products.json?limit=250',
-  superscript_shopify: 'https://www.superscriptohio.com/products.json?limit=250'
+  superscript_shopify: 'https://www.superscriptohio.com/products.json?limit=250',
+  marzcardz_shopify: 'https://marzcardz.shop/products.json?limit=250',
+  sweetsgeeks_shopify: 'https://sweets-and-geeks.myshopify.com/products.json?limit=250',
+  rozaypoke_shopify: 'https://shiprozaypoke.com/products.json?limit=250'
 };
 
 const terms = [
