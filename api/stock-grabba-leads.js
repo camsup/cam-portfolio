@@ -65,7 +65,9 @@ export default async function handler(req, res) {
     return res.status(200).json({ ok: true, dryRun: true, type, retailer, store, product, statusLine });
   }
 
-  const webhook = 'https://discord.com/api/webhooks/1552482750747906048/' + token + '?wait=true';
+  const webhook = webhookUrl
+    ? webhookUrl + (webhookUrl.includes('?') ? '&wait=true' : '?wait=true')
+    : 'https://discord.com/api/webhooks/1552482750747906048/' + token + '?wait=true';
 
   try {
     const response = await fetch(webhook, {
